@@ -34,7 +34,9 @@ class StandardCalculator extends Component {
     this.state = {
       operation: "",
       current: "",
+      previous: "",
       answer: "",
+      equation: "",
       point: false,
       calulatorType: "Standard",
       memory: [],
@@ -69,73 +71,89 @@ class StandardCalculator extends Component {
   }
 
   addition() {
-    if (this.state.current != "")
-      this.execute();
-
-    this.setState({
-      operation: "+",
-    });
+    this.execute("+");
   }
 
   subtraction() {
-    this.execute();
-
-    this.setState({
-      operation: "-",
-    });
+    this.execute("-");
   }
 
   multiplication() {
-    this.execute();
-
-    this.setState({
-      operation: "*",
-    });
+    this.execute("*");
   }
 
   division() {
-    this.execute();
-
-    this.setState({
-      operation: "/",
-    });
+    this.execute("/");
   }
 
-  execute() {
+  execute(newOp) {
     //find the operation to be preformed
     var answer = parseFloat(this.state.answer);
     var current = parseFloat(this.state.current);
+    var previous = parseFloat(this.state.previous);
+    var operation = this.state.operation;
+    var equation = "";
 
     if (isNaN(answer))
       answer = 0;
     if (isNaN(current))
       current = 0;
+    if (isNaN(previous))
+      previous = 0;
 
-
-    switch(this.state.operation) {
+    switch(operation) {
       case "+":
-        answer = answer + current;
+        answer = previous + current;
         break;
       case "-":
-        answer = answer - current;
+        answer = previous - current;
         break;
       case "*":
-        answer = answer * current;
+        answer = previous * current;
         break;
       case "/":
-        answer = answer / current;
+        answer = previous / current;
         break;
       default:
         answer = current;
         break;
     }
 
+    if (newOp === undefined) {
+      equation = this.updateEquation();
+    }
+    else {
+      equation = answer + newOp;
+    }
+
     this.setState({
       current: "",
-      operation: "",
+      operation: newOp,
+      previous: answer,
       answer: answer,
+      equation: equation,
     })
 
+  }
+
+  updateEquation() {
+    var equation = "";
+    var current = this.state.current;
+    var previous = parseFloat(this.state.previous);
+    var operation = this.state.operation;
+
+    
+
+    if (this.state.operation === "")
+      equation = current;
+    else {
+      if (isNaN(previous))
+        previous = 0;
+      
+      equation = previous + operation + current;
+    }
+
+    return equation;  
   }
 
   percent() {
@@ -252,8 +270,10 @@ class StandardCalculator extends Component {
     //clear all
     this.setState({
       current: "",
+      previous: "",
       answer: "",
       operation: "",
+      equation: "",
     });
   }
 
@@ -261,6 +281,7 @@ class StandardCalculator extends Component {
     //clear current
     this.setState({
       current: "",
+      answer: "",
     });
 
   }
@@ -273,7 +294,8 @@ class StandardCalculator extends Component {
         <CalculatorOutput type={this.state.calulatorType} 
                           current={this.state.current} 
                           answer={this.state.answer}
-                          operation={this.state.operation}></CalculatorOutput>
+                          operation={this.state.operation}
+                          equation={this.state.equation}></CalculatorOutput>
         <CalculatorButtons type={this.state.calulatorType} functions={this.functions}></CalculatorButtons>
         <CalculatorAside history={this.state.history} memory={this.state.memory}></CalculatorAside>
       </div>
@@ -291,16 +313,13 @@ class CalculatorOutput extends Component {
   render() {
     var current = this.props.current;
     var answer = this.props.answer;
-    var operation = this.props.operation;
+    var equation = this.props.equation;
 
-    if (operation != "" && answer === "") {
+    if (answer === "")
       answer = "0";
-    }
-
-    var equation = answer + " " + operation;
 
     if (current === "")
-      current = "0";
+      current = answer;
       
 
     return (
@@ -322,7 +341,8 @@ class CalculatorButtons extends Component {
 
   render() {
 
-    return <div className='calculator_buttons'>
+    return (
+    <div className='calculator_buttons'>
         <CalculatorButton className="function_button" function={this.props.functions.percent} text="%"></CalculatorButton>
         <CalculatorButton className="function_button" function={this.props.functions.clearEntry} text="CE"></CalculatorButton>
         <CalculatorButton className="function_button" function={this.props.functions.clearAll} text="C"></CalculatorButton>
@@ -352,8 +372,8 @@ class CalculatorButtons extends Component {
         <CalculatorButton className="number_button" function={this.props.functions.input} text="0"></CalculatorButton>
         <CalculatorButton className="number_button" function={this.props.functions.point} text="."></CalculatorButton>
         <CalculatorButton className="execute_button" function={this.props.functions.execute} text="="></CalculatorButton>
-  
     </div>
+    )
   }
 };
 

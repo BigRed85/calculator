@@ -174,7 +174,7 @@ class StandardCalculator extends Component {
       equation = current;
     }
     else {
-      equation = previous + operation + current;
+      equation = previous + " " + operation + " " + current;
     }
 
     return equation;
@@ -189,6 +189,13 @@ class StandardCalculator extends Component {
     }
 
     history.push(newHist);
+
+    if (history.length > 30) {
+      history.reverse();
+      history.pop();
+      history.reverse();
+    }
+
 
     return history;
   }
@@ -371,8 +378,6 @@ class CalculatorOutput extends Component {
 class CalculatorButtons extends Component {
   constructor(props) {
     super(props);
-
-
   }
 
 
@@ -444,29 +449,31 @@ class CalculatorAside extends Component {
     }
   }
 
-  switch(event) {
-    var toSwitchTo = event.target.innerText;
-
+  switch(switchTo) {
     this.setState({
-      selection: toSwitchTo,
+      selection: switchTo,
     });
   }
 
   render() {
-    var toDisplay
+    var toDisplay;
+    var history_select = "history_select"
+    var memory_select = "memory_select"
     switch (this.state.selection) {
       case "Memory":
         toDisplay = <CalculatorMemory memory={this.props.memory}></CalculatorMemory>
+        memory_select = memory_select + " aside_selected";
         break;
       case "History":
       default:
         toDisplay = <CalculatorHistory history={this.props.history}></CalculatorHistory>
+        history_select = history_select + " aside_selected";
     }
 
     return (
       <div className='aside'>
-        <button onClick={this.switch} className='history_button'>History</button>
-        <button onClick={this.switch} className='memory_button'>Memory</button>
+        <button onClick={() => this.switch("History")} className={history_select}>History</button>
+        <button onClick={() => this.switch("Memory")} className={memory_select}>Memory</button>
         {toDisplay}
       </div>
     );

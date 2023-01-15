@@ -60,7 +60,10 @@ class StandardCalculator extends Component {
       back: () => { this.back() },
       clearAll: () => { this.clearAll() },
       clearEntry: () => { this.clearEntry() },
+      historyRecall: (index) => { this.historyRecall(index) },
     }
+
+  
   }
 
   numberInput(number) {//what if the number is the previous answer?
@@ -198,6 +201,18 @@ class StandardCalculator extends Component {
 
 
     return history;
+  }
+
+  historyRecall(index) {
+    const history = this.state.history[index];
+
+    this.setState({
+      equation: history.equation,
+      answer: history.answer,
+      current: "",
+      previous: "",
+      operation: "",
+    });
   }
 
   percent() {
@@ -341,7 +356,7 @@ class StandardCalculator extends Component {
           operation={this.state.operation}
           equation={this.state.equation}></CalculatorOutput>
         <CalculatorButtons type={this.state.calulatorType} functions={this.functions}></CalculatorButtons>
-        <CalculatorAside history={this.state.history} memory={this.state.memory}></CalculatorAside>
+        <CalculatorAside history={this.state.history} memory={this.state.memory} functions={this.functions}></CalculatorAside>
       </div>
     )
   }
@@ -461,12 +476,12 @@ class CalculatorAside extends Component {
     var memory_select = "memory_select"
     switch (this.state.selection) {
       case "Memory":
-        toDisplay = <CalculatorMemory memory={this.props.memory}></CalculatorMemory>
+        toDisplay = <CalculatorMemory memory={this.props.memory} functions={this.props.functions}></CalculatorMemory>
         memory_select = memory_select + " aside_selected";
         break;
       case "History":
       default:
-        toDisplay = <CalculatorHistory history={this.props.history}></CalculatorHistory>
+        toDisplay = <CalculatorHistory history={this.props.history} functions={this.props.functions}></CalculatorHistory>
         history_select = history_select + " aside_selected";
     }
 
@@ -486,19 +501,21 @@ class CalculatorHistory extends Component {
   }
 
   render() {
-    const history = this.props.history.reverse();
+    const history = this.props.history;
 
-    const listHistory = history.map((history) => {
+    const listHistory = history.map((history, index) => {
       //show the equation and the awnser are a button
       return (
         <li key={history.key} className="history_item">
-          <button>
+          <button onClick={() => {this.props.functions.historyRecall(index)}}>
             <div>{history.equation} =</div>
             <div>{history.answer}</div>
           </button>
         </li>
       );
     })
+
+    listHistory.reverse();
 
     return <ul className='history_list'>{listHistory}</ul>
   }

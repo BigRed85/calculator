@@ -6,7 +6,7 @@
 
   display: grid;
   grid-template-columns: 1fr max(15em, 20vw);
-  grid-template-rows: 30vh auto;
+  grid-template-rows: 30vh 3rem 1fr;
 }
 
 .calculator_output {
@@ -32,9 +32,9 @@
 
 .calculator_buttons {
   grid-column: 1;
-  grid-row: 2;
+  grid-row: 3;
 
-  height: 69vh;
+  height: 60vh;
   margin: 2px;
   margin-bottom: 1vh;
   
@@ -82,6 +82,23 @@
 
 .history_select:hover {
   background-color: #383838;
+}
+
+.memory_button {
+  background-color: transparent;
+}
+
+.memory_button:hover {
+  background-color: #232323;
+}
+
+.memory_button.disabled {
+  background-color: transparent;
+  color: #6f6f6f;
+}
+
+.memory_button.disabled:hover {
+  background-color: transparent;
 }
 
 .memory_select {

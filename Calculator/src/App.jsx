@@ -61,11 +61,17 @@ class StandardCalculator extends Component {
       clearAll: () => { this.clearAll() },
       clearEntry: () => { this.clearEntry() },
       historyRecall: (index) => { this.historyRecall(index) },
+      memoryClear: () => { this.memoryClear() },
+      memoryRecall: (index) => { this.memoryRecall(index) },
+      memoryAdd: (index) => {this.memoryAdd(index) },
+      memorySubtract: (index) => { this.memorySubtract(index)},
+      memorySave: () => { this.memorySave() },
     }
 
   
   }
 
+  //----------------- calculator button functions --------------
   numberInput(number) {//what if the number is the previous answer?
     this.setState({
       current: this.state.current + number,
@@ -149,70 +155,6 @@ class StandardCalculator extends Component {
       count: this.state.count+1,
     })
 
-  }
-
-  updateEquation(isCompleat = false) {
-    //the posible equations are
-    // previous + operation + current : a compleat equation has been entered
-    // previous + operation : where the second half of the equation has not been entered yet
-    // current : a compleat equation with only one entry "a = a"
-    var equation = "";
-    var current = this.state.current;
-    var previous = parseFloat(this.state.previous);
-    var operation = this.state.operation;
-    var answer =  parseFloat(this.state.answer);
-
-    if (isNaN(previous))
-      previous = 0;
-    if (isNaN(answer))
-      answer = 0;
-
-    if (isCompleat || this.state.operation === "") {
-      current = parseFloat(current);
-      current = isNaN(current) ? answer : current;
-    }
-
-
-    if (this.state.operation === "") {
-      equation = current;
-    }
-    else {
-      equation = previous + " " + operation + " " + current;
-    }
-
-    return equation;
-  }
-
-  updateHistory(equation, answer) {
-    var history = this.state.history;
-    var newHist = {
-      equation: equation,
-      answer: answer,
-      key: this.state.count,
-    }
-
-    history.push(newHist);
-
-    if (history.length > 30) {
-      history.reverse();
-      history.pop();
-      history.reverse();
-    }
-
-
-    return history;
-  }
-
-  historyRecall(index) {
-    const history = this.state.history[index];
-
-    this.setState({
-      equation: history.equation,
-      answer: history.answer,
-      current: "",
-      previous: "",
-      operation: "",
-    });
   }
 
   percent() {
@@ -345,7 +287,143 @@ class StandardCalculator extends Component {
 
   }
 
+  //------------------ helper functions
 
+  updateEquation(isCompleat = false) {
+    //the posible equations are
+    // previous + operation + current : a compleat equation has been entered
+    // previous + operation : where the second half of the equation has not been entered yet
+    // current : a compleat equation with only one entry "a = a"
+    var equation = "";
+    var current = this.state.current;
+    var previous = parseFloat(this.state.previous);
+    var operation = this.state.operation;
+    var answer =  parseFloat(this.state.answer);
+
+    if (isNaN(previous))
+      previous = 0;
+    if (isNaN(answer))
+      answer = 0;
+
+    if (isCompleat || this.state.operation === "") {
+      current = parseFloat(current);
+      current = isNaN(current) ? answer : current;
+    }
+
+
+    if (this.state.operation === "") {
+      equation = current;
+    }
+    else {
+      equation = previous + " " + operation + " " + current;
+    }
+
+    return equation;
+  }
+
+  //this function will return the current value (i should look through the code to find were this could be of use!)
+  getCurrentValue() {
+    var current = parseFloat(this.state.current);
+    var answer = parseFloat(this.state.answer);
+    
+    answer = isNaN(answer) ? 0 : answer;
+    current = isNaN(current) ? answer : current;
+
+    return current;
+  }
+
+
+  //------------------ history functions -------------------------------
+  updateHistory(equation, answer) {
+    var history = this.state.history;
+    var newHist = {
+      equation: equation,
+      answer: answer,
+      key: this.state.count,
+    }
+
+    history.push(newHist);
+
+    if (history.length > 30) {
+      history.reverse();
+      history.pop();
+      history.reverse();
+    }
+
+
+    return history;
+  }
+
+  historyRecall(index) {
+    const history = this.state.history[index];
+
+    this.setState({
+      equation: history.equation,
+      answer: history.answer,
+      current: "",
+      previous: "",
+      operation: "",
+    });
+  }
+
+  //----------- memory functions --------------------------------------
+  memoryClear() {
+    //clear the memeory 
+
+    this.setState({
+      memory: [],
+    });
+  }
+
+  memoryRecall(index) {
+    //recalls the current memory 
+    this.setState({
+      current: this.state.memory[index],
+    })
+  }
+
+  memoryAdd(index) {
+    //adds the current value to the memory value at the given index
+    var value = this.getCurrentValue();
+
+    this.memoryAdd2(value, index);
+  }
+
+  memorySubtract(index) {
+    //subtracts the current value from the memory value at the given index
+    var value = this.getCurrentValue();
+    value *= -1;
+
+    this.memoryAdd2(value, index);
+  }
+
+  //this is a helper function that will add the value to memory at the given index
+  //it is unsafe as it dose not check if the value is a number
+  //use memoryAdd or memorySubtract
+  memoryAdd2(value, index) {
+    const memory = this.state.memory;
+
+    memory[index] += value;
+
+    this.setState({
+      memory: memory,
+    });
+  }
+
+  memorySave() {
+    //saves a new memory entry
+    const memory = this.state.memory;
+    var value = this.getCurrentValue();
+
+    memory.push(value);
+
+    this.setState({
+      memory: memory,
+    });
+  }
+
+
+  //--------- the render function -----------------------------------
   render() {
 
     return (
@@ -355,6 +433,7 @@ class StandardCalculator extends Component {
           answer={this.state.answer}
           operation={this.state.operation}
           equation={this.state.equation}></CalculatorOutput>
+        <MemoryButtons memory={this.state.memory} functions={this.functions}></MemoryButtons>
         <CalculatorButtons type={this.state.calulatorType} functions={this.functions}></CalculatorButtons>
         <CalculatorAside history={this.state.history} memory={this.state.memory} functions={this.functions}></CalculatorAside>
       </div>
@@ -448,6 +527,36 @@ class CalculatorButton extends Component {
 };
 
 class MemoryButtons extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const index = this.props.memory.length - 1;
+
+    if (index < 0) {
+      //if the memory array is empty
+      return (
+        <div>
+          <button className='memory_button disabled'>MC</button>
+          <button className='memory_button disabled'>MR</button>
+          <button className='memory_button' onClick={() => this.props.functions.memoryAdd(index)}>M+</button>
+          <button className='memory_button' onClick={() => this.props.functions.memorySubtract(index)}>M-</button>
+          <button className='memory_button' onClick={() => this.props.functions.memorySave()}>MS</button>
+        </div>
+      );
+    }
+
+    return(
+      <div>
+        <button className='memory_button' onClick={() => this.props.functions.memoryClear()}>MC</button>
+        <button className='memory_button' onClick={() => this.props.functions.memoryRecall(index)}>MR</button>
+        <button className='memory_button' onClick={() => this.props.functions.memoryAdd(index)}>M+</button>
+        <button className='memory_button' onClick={() => this.props.functions.memorySubtract(index)}>M-</button>
+        <button className='memory_button' onClick={() => this.props.functions.memorySave()}>MS</button>
+      </div>
+    );
+  }
 
 };
 
@@ -503,6 +612,10 @@ class CalculatorHistory extends Component {
   render() {
     const history = this.props.history;
 
+    if (history.length === 0) {
+      return <div>There's no history yet</div>
+    }
+
     const listHistory = history.map((history, index) => {
       //show the equation and the awnser are a button
       return (
@@ -516,7 +629,7 @@ class CalculatorHistory extends Component {
     })
 
     listHistory.reverse();
-
+  
     return <ul className='history_list'>{listHistory}</ul>
   }
 };

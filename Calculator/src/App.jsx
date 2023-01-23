@@ -516,8 +516,6 @@ class CalculatorButtons extends Component {
 class CalculatorButton extends Component {
   constructor(props) {
     super(props);
-
-
   }
 
   render() {
@@ -557,10 +555,6 @@ class MemoryButtons extends Component {
       </div>
     );
   }
-
-};
-
-class MemoryButton extends Component {
 
 };
 
@@ -612,31 +606,60 @@ class CalculatorHistory extends Component {
   render() {
     const history = this.props.history;
 
-    if (history.length === 0) {
+    if (history.length <= 0) {
       return <div>There's no history yet</div>
     }
 
     const listHistory = history.map((history, index) => {
       //show the equation and the awnser are a button
       return (
-        <li key={history.key} className="history_item">
-          <button onClick={() => {this.props.functions.historyRecall(index)}}>
+        <li key={history.key} className="aside_list_item">
+          <button onClick={() => {this.props.functions.historyRecall(index)}} className='aside_list_item_button'>
             <div>{history.equation} =</div>
             <div>{history.answer}</div>
           </button>
         </li>
       );
-    })
+    });
 
     listHistory.reverse();
   
-    return <ul className='history_list'>{listHistory}</ul>
+    return <ul className='aside_list'>{listHistory}</ul>;
   }
 };
 
 class CalculatorMemory extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
-    return <div></div>
+    const memory = this.props.memory;
+
+    if (memory.length <= 0) {
+      return (
+        <div>There's nothing saved in memory</div>
+      );
+    }
+
+    const memoryList = memory.map((memory, index) => {
+      return(
+        <li key={index} className='aside_list_item'>
+          <button onClick={() => {this.props.functions.memoryRecall(index)}} className='aside_list_item_button'>
+            <div>{memory}</div>
+            <div className='memory_sub_buttons'>
+              <button>MC</button>
+              <button>M+</button>
+              <button>M-</button>
+            </div>
+          </button>
+        </li>
+      );
+    });
+
+    memoryList.reverse();
+
+    return <ul className='aside_list'>{memoryList}</ul>;
   }
 };
 

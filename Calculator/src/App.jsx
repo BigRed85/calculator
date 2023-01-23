@@ -44,6 +44,8 @@ class StandardCalculator extends Component {
 
     }
 
+    //this is a object that contains refences to all the functions that the buttons will need to initialize
+    //this allows for a simplified passing of functions without scoping problems
     this.functions = {
       input: (number) => { this.numberInput(number) },
       add: () => { this.addition() },
@@ -61,7 +63,7 @@ class StandardCalculator extends Component {
       clearAll: () => { this.clearAll() },
       clearEntry: () => { this.clearEntry() },
       historyRecall: (index) => { this.historyRecall(index) },
-      memoryClear: () => { this.memoryClear() },
+      memoryClear: (index) => { this.memoryClear(index) },
       memoryRecall: (index) => { this.memoryRecall(index) },
       memoryAdd: (index) => {this.memoryAdd(index) },
       memorySubtract: (index) => { this.memorySubtract(index)},
@@ -367,12 +369,24 @@ class StandardCalculator extends Component {
   }
 
   //----------- memory functions --------------------------------------
-  memoryClear() {
-    //clear the memeory 
+  memoryClear(index = null) {
+    //if index is null clear the memeory 
+    if (index === null) {
+      this.setState({
+        memory: [],
+      });
+    }
+    else {
+      //otherwise delete the entry at index
+      const memory = this.state.memory;
+      memory.splice(index, 1);
 
-    this.setState({
-      memory: [],
-    });
+      this.setState({
+        memory: memory,
+      });
+    }
+
+    
   }
 
   memoryRecall(index) {
@@ -614,10 +628,10 @@ class CalculatorHistory extends Component {
       //show the equation and the awnser are a button
       return (
         <li key={history.key} className="aside_list_item">
-          <button onClick={() => {this.props.functions.historyRecall(index)}} className='aside_list_item_button'>
+          <div onClick={() => {this.props.functions.historyRecall(index)}} className='aside_list_item_button'>
             <div>{history.equation} =</div>
             <div>{history.answer}</div>
-          </button>
+          </div>
         </li>
       );
     });
@@ -645,14 +659,14 @@ class CalculatorMemory extends Component {
     const memoryList = memory.map((memory, index) => {
       return(
         <li key={index} className='aside_list_item'>
-          <button onClick={() => {this.props.functions.memoryRecall(index)}} className='aside_list_item_button'>
+          <div onClick={() => {this.props.functions.memoryRecall(index)}} className='aside_list_item_button'>
             <div>{memory}</div>
             <div className='memory_sub_buttons'>
-              <button>MC</button>
-              <button>M+</button>
-              <button>M-</button>
+              <button onClick={ (e) => {e.stopPropagation(); this.props.functions.memoryClear(index);}}>MC</button>
+              <button onClick={ (e) => {e.stopPropagation(); this.props.functions.memoryAdd(index);}}>M+</button>
+              <button onClick={ (e) => {e.stopPropagation(); this.props.functions.memorySubtract(index);}}>M-</button>
             </div>
-          </button>
+          </div>
         </li>
       );
     });

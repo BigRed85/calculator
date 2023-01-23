@@ -417,7 +417,12 @@ class StandardCalculator extends Component {
   memoryAdd2(value, index) {
     const memory = this.state.memory;
 
-    memory[index] += value;
+    if (memory.length <= 0) {
+      memory.push(value);
+    }
+    else {
+      memory[index] += value;
+    }
 
     this.setState({
       memory: memory,
@@ -677,6 +682,7 @@ class CalculatorMemory extends Component {
   }
 };
 
+//this will alow the user to select other types of calculators
 class NavMenu extends Component {
   render() {
     return <nav></nav>

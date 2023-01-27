@@ -177,10 +177,7 @@ class StandardCalculator extends Component {
   }
 
   fraction() { //look into fixing this so that it returns an error if current is 0
-    var current = parseFloat(this.state.current);
-
-    if (isNaN(current))
-      current = 0;
+    var current = this.getCurrentValue();
 
     if (current == 0)
       return;
@@ -195,10 +192,7 @@ class StandardCalculator extends Component {
   }
 
   square() {
-    var current = parseFloat(this.state.current);
-
-    if (isNaN(current))
-      current = 0;
+    var current = this.getCurrentValue();
 
     if (current == 0)
       return;
@@ -212,10 +206,7 @@ class StandardCalculator extends Component {
   }
 
   squareRoot() {
-    var current = parseFloat(this.state.current);
-
-    if (isNaN(current))
-      current = 0;
+    var current = this.getCurrentValue();
 
     if (current == 0)
       return;
@@ -229,10 +220,7 @@ class StandardCalculator extends Component {
   }
 
   negation() {
-    var current = parseFloat(this.state.current);
-
-    if (isNaN(current))
-      current = 0;
+    var current = this.getCurrentValue();
 
     current = -current;
 
@@ -244,10 +232,7 @@ class StandardCalculator extends Component {
   }
 
   point() {
-    var current = parseFloat(this.state.current);
-
-    if (isNaN(current))
-      current = 0;
+    var current = this.getCurrentValue();
 
     current = String(current);
     current = current + '.';

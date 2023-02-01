@@ -1,6 +1,10 @@
 import { Component } from 'react'
 import './App.css'
 
+/* 
+Class: App
+I the application container for the calculator
+*/
 class App extends Component {
   constructor(props) {
     super(props);
@@ -26,6 +30,20 @@ class App extends Component {
   }
 }
 
+/*
+Class: Standard Calculator
+is a class tha defines a standard calculator that is able to do binary and unirary operations such as:
+  -addition
+  -subtraction
+  -multiplication
+  -division
+  -square
+  -square root
+  -fraction
+  -precentage
+
+it will have a history and memory capabilities
+*/
 class StandardCalculator extends Component {
   constructor(props) {
     super(props);
@@ -74,6 +92,15 @@ class StandardCalculator extends Component {
   }
 
   //----------------- calculator button functions --------------
+
+  /*
+    function: number input
+    purpose: inputs a digit to set as the least signifigant digit
+    Perameters:
+      <1>: number : the digit to be added to the number
+    Output: no output
+    Sideffects: changes the value of state.current
+  */
   numberInput(number) {//what if the number is the previous answer?
     this.setState({
       current: this.state.current + number,
@@ -81,22 +108,65 @@ class StandardCalculator extends Component {
 
   }
 
+  /**
+   * function: addition
+   * Purpose: executes an addition operation
+   * perameters: none
+   * Output: none
+   * Side Effects: answer becomes the sum of the current and pervious values (see execute function for more details)
+   */
   addition() {
     this.execute("+");
   }
 
+  /**
+   * function: subtraciton
+   * purpose: executes a subtraction operation
+   * perameters: none
+   * output: none
+   * side effect: answer becomes the difrence between the prvious and current values (see execute function for more details)
+   */
   subtraction() {
     this.execute("-");
   }
 
+  /**
+   * function: multiplication
+   * purpose: executes a multiplication operation
+   * perameters: none
+   * output: none
+   * side effects: answer becomes the product of the previous and the current values (see the execute function for more details)
+   */
   multiplication() {
     this.execute("*");
   }
 
+
+  /**
+   * function: division
+   * purpose: executes a division operation
+   * perameters: none
+   * output: none
+   * side effect: answer becomse the product of the previous and the current valuse (see the execute functions for more details)
+   */
   division() {
     this.execute("/");
   }
 
+  /**
+   * function: execute
+   * purpose: execute an operation that is in the state.operation and puts the answer into the state.answer
+   * @param {string} newOp : is a new operation that will be put into the state.operation
+   * output: none
+   * side effect: changes the state of the component
+   *  current: ""
+   *  previous: the answer
+   *  answer: the answer
+   *  equation: a string that represents the current equation
+   *  history: updated with the current executed eqation
+   *  count: count + 1
+   * 
+   */
   execute(newOp = "") {
     //find the operation to be preformed
     var answer = parseFloat(this.state.answer);
@@ -159,8 +229,14 @@ class StandardCalculator extends Component {
 
   }
 
+  /**
+   * function: percent
+   * purpose: cange the current value to a precentage of the previous value (eg. pervious: 4, current 50, results in current becoming 2 )
+   * parameters: none
+   * output: none
+   * side effects: none
+   */
   percent() {
-    //cange the cuurent to a precent of the answer
     var answer = parseFloat(this.state.answer);
     var current = parseFloat(this.state.current);
 
@@ -176,6 +252,14 @@ class StandardCalculator extends Component {
     })
   }
 
+  /**
+   * function: fraction
+   * purpose: changes the current value into the inverse 1/current in decimal 
+   * peramaters: none
+   * output: none
+   * side effects: none
+   * 
+   */
   fraction() { //look into fixing this so that it returns an error if current is 0
     var current = this.getCurrentValue();
 
@@ -191,6 +275,13 @@ class StandardCalculator extends Component {
 
   }
 
+  /**
+   * function: square
+   * purpose: squares the current value 
+   * paramaters: none
+   * output: none
+   * side effects: none
+   */
   square() {
     var current = this.getCurrentValue();
 
@@ -205,6 +296,13 @@ class StandardCalculator extends Component {
     });
   }
 
+  /**
+   * function: square root
+   * purpose: the current value becomes the square root
+   * parameters: none
+   * returns: none
+   * side effect: none
+   */
   squareRoot() {
     var current = this.getCurrentValue();
 
@@ -219,6 +317,13 @@ class StandardCalculator extends Component {
     });
   }
 
+  /**
+   * function: negation
+   * purpose: multiplies the current value by negative 1
+   * paramaters: none
+   * returns: none
+   * side effect none
+   */
   negation() {
     var current = this.getCurrentValue();
 
@@ -231,6 +336,13 @@ class StandardCalculator extends Component {
 
   }
 
+  /**
+   * function: point 
+   * purpose: adds a decimal point to the current value (if there is not one)
+   * parameters: none
+   * return: none
+   * side effects: none
+   */
   point() {
     var current = this.getCurrentValue();
 
@@ -242,6 +354,14 @@ class StandardCalculator extends Component {
     })
   }
 
+
+  /**
+   * function: back
+   * purpose: remove the last character added to the current value
+   * parameters: none
+   * retruns: none
+   * side effect: none
+   */
   back() {
     //go back one step (in the creation of the current)(backspace)
     var current = this.state.current;
@@ -254,6 +374,13 @@ class StandardCalculator extends Component {
     });
   }
 
+  /**
+   * function: clear all
+   * purpose: clears the current equation and sets all relative state values to ""
+   * paramaters: none
+   * returns: none
+   * side effects: none
+   */
   clearAll() {
     //clear all
     this.setState({
@@ -265,6 +392,13 @@ class StandardCalculator extends Component {
     });
   }
 
+  /**
+   * function: clear entry
+   * purpose: clears the current value
+   * paramaters: none
+   * returns: none
+   * side effects: clears the answer value
+   */
   clearEntry() {
     //clear current
     this.setState({
@@ -276,6 +410,13 @@ class StandardCalculator extends Component {
 
   //------------------ helper functions
 
+  /**
+   * function: update equation
+   * purpose: generates an updated equation based on the values in the state
+   * @param {boolean} isCompleat : signifies if the equation is a compleat equation
+   * @returns a string that is the new equation
+   * side effects: none
+   */
   updateEquation(isCompleat = false) {
     //the posible equations are
     // previous + operation + current : a compleat equation has been entered
@@ -308,7 +449,14 @@ class StandardCalculator extends Component {
     return equation;
   }
 
-  //this function will return the current value (i should look through the code to find were this could be of use!)
+  
+  /**
+   * function: get current value
+   * purpose: a helper functio that returns the current value 
+   * paramaters: none
+   * @returns the current value
+   * side effects: none
+   */
   getCurrentValue() {
     var current = parseFloat(this.state.current);
     var answer = parseFloat(this.state.answer);
@@ -321,6 +469,15 @@ class StandardCalculator extends Component {
 
 
   //------------------ history functions -------------------------------
+
+  /**
+   * function: update History
+   * purpose: generates a new history entry that can be added to the history state
+   * @param {*} equation : the equation that will be added to the new history entry
+   * @param {*} answer : the answer to be added to he new history entry
+   * @returns the generated history entry
+   * side effects: none
+   */
   updateHistory(equation, answer) {
     var history = this.state.history;
     var newHist = {
@@ -341,6 +498,13 @@ class StandardCalculator extends Component {
     return history;
   }
 
+  /**
+   * Function: history recall
+   * purpose: recall the given history entry and set the equation and answer values acordingly   * 
+   * @param {*} index : the index of the history value to be recalled
+   * returns: none
+   * side effects: the current, previous, and operation valuse are cleared
+   */
   historyRecall(index) {
     const history = this.state.history[index];
 
@@ -354,6 +518,14 @@ class StandardCalculator extends Component {
   }
 
   //----------- memory functions --------------------------------------
+
+  /**
+   * function: memory clear
+   * purpose: deletes the memory entry at the given index, if no index is given deletes all the memory entries
+   * @param {*} index : the index of the memory entry to be deleted
+   * returns: none
+   * side effects: none
+   */
   memoryClear(index = null) {
     //if index is null clear the memeory 
     if (index === null) {
@@ -374,6 +546,11 @@ class StandardCalculator extends Component {
     
   }
 
+  /**
+   * function: memory recall
+   * purpose: recalls the memory value at given index, seting the current value to hte memory value
+   * @param {*} index : the index of the memory value to recall
+   */
   memoryRecall(index) {
     //recalls the current memory 
     this.setState({
@@ -381,6 +558,13 @@ class StandardCalculator extends Component {
     })
   }
 
+  /**
+   * function: memory add
+   * purpose: adds the current value to the memory value at the given index
+   * @param {*} index : the index of the memory value that will be added to
+   * return: none
+   * side effects: none
+   */
   memoryAdd(index) {
     //adds the current value to the memory value at the given index
     var value = this.getCurrentValue();
@@ -388,6 +572,13 @@ class StandardCalculator extends Component {
     this.memoryAdd2(value, index);
   }
 
+  /**
+   * function: memory subtract 
+   * purpose: subtracts the current value to the memory value at the given index
+   * @param {*} index : the index of the memory value to will be subtracted from
+   * return: none
+   * side effects: none
+   */
   memorySubtract(index) {
     //subtracts the current value from the memory value at the given index
     var value = this.getCurrentValue();
@@ -399,6 +590,17 @@ class StandardCalculator extends Component {
   //this is a helper function that will add the value to memory at the given index
   //it is unsafe as it dose not check if the value is a number
   //use memoryAdd or memorySubtract
+
+  /**
+   * function: memory add 2
+   * purpose: this is a helper function that will add the values to memory at the given index 
+   * @param {*} value : the value to be added
+   * @param {*} index : the index of the memory to be added to
+   * return: none
+   * side effects: none
+   * 
+   * note: this is unsafe as it does not check if the value is a number, use memoryAdd or memorySubtract
+   */
   memoryAdd2(value, index) {
     const memory = this.state.memory;
 
@@ -414,6 +616,13 @@ class StandardCalculator extends Component {
     });
   }
 
+  /**
+   * function: memory save
+   * purpose: saves the current value into a new memory cell
+   * paramaters: none
+   * return: none
+   * side effects: none
+   */
   memorySave() {
     //saves a new memory entry
     const memory = this.state.memory;
@@ -445,6 +654,11 @@ class StandardCalculator extends Component {
   }
 };
 
+/**
+ * class: calculator output
+ * the component that acts as the main output of the caluculator 
+ * this consists of the equation and the current value (which will sometimes be the answer)
+ */
 class CalculatorOutput extends Component {
   constructor(props) {
     super(props);
@@ -473,6 +687,13 @@ class CalculatorOutput extends Component {
   }
 };
 
+/**
+ * class: calculator buttons
+ * this component contains the buttons of the calculator that will input digits and execute functions
+ * props:
+ *  type: the type of caluculator that this belongs to
+ *  function: a object that contains all the function needed by the buttons
+ */
 class CalculatorButtons extends Component {
   constructor(props) {
     super(props);
@@ -517,6 +738,14 @@ class CalculatorButtons extends Component {
   }
 };
 
+/**
+ * class: calculator button
+ * this component acts as a calculator button that will call a function and display a given text
+ * props:
+ *  function: the function that the button will execute
+ *  className: the name of the class the button will belong to
+ *  text: the text to be displayed (or used in the function call for number input)
+ */
 class CalculatorButton extends Component {
   constructor(props) {
     super(props);
@@ -562,6 +791,14 @@ class MemoryButtons extends Component {
 
 };
 
+/**
+ * class: calculator aside
+ * a side section that will contain the history and the memory for the calculator
+ * props:
+ *  memory: the memory array 
+ *  history:  the history array
+ *  functions:  an object that contains all the needed function regarding memory and history
+ */
 class CalculatorAside extends Component {
   constructor(props) {
     super(props);
@@ -602,6 +839,13 @@ class CalculatorAside extends Component {
   }
 };
 
+/**
+ * class: Calculator History
+ * the component that is used to display the history
+ * props: 
+ *  history: the history array that will be displayed
+ *  functions: an object containing refences to the needed funcitons for history recall
+ */
 class CalculatorHistory extends Component {
   constructor(props) {
     super(props);
@@ -632,6 +876,13 @@ class CalculatorHistory extends Component {
   }
 };
 
+/**
+ * class: Calculator Memory 
+ * the component the displayes the memory arrya 
+ * props
+ *  memory: the memory array that will be displayed 
+ *  functions: an object containing the refences to function that are needed for memory recall and modification
+ */
 class CalculatorMemory extends Component {
   constructor(props) {
     super(props);
